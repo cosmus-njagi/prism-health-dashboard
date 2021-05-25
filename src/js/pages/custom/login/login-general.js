@@ -187,6 +187,210 @@ var KTLogin = function() {
 		    });
         });
 
+
+		var _handleSignUpForm = function(e) {
+        var validation;
+        var form = KTUtil.getById('kt_login_signup_form');
+
+        // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
+        validation = FormValidation.formValidation(
+			form,
+			{
+				fields: {
+					fullname: {
+						validators: {
+							notEmpty: {
+								message: 'Username is required'
+							}
+						}
+					},
+					email: {
+                        validators: {
+							notEmpty: {
+								message: 'Email address is required'
+							},
+                            emailAddress: {
+								message: 'The value is not a valid email address'
+							}
+						}
+					},
+                    password: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The password is required'
+                            }
+                        }
+                    },
+                    cpassword: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The password confirmation is required'
+                            },
+                            identical: {
+                                compare: function() {
+                                    return form.querySelector('[name="password"]').value;
+                                },
+                                message: 'The password and its confirm are not the same'
+                            }
+                        }
+                    },
+                    agree: {
+                        validators: {
+                            notEmpty: {
+                                message: 'You must accept the terms and conditions'
+                            }
+                        }
+                    },
+				},
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					bootstrap: new FormValidation.plugins.Bootstrap()
+				}
+			}
+		);
+
+
+        // Handle cancel button
+        $('#kt_login_signup_cancel').on('click', function (e) {
+            e.preventDefault();
+
+            _showForm('signin');
+        });
+	}
+	
+	var _handleProductForm = function(e) {
+        var validation;
+        var form = KTUtil.getById('add_product_form');
+
+        // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
+        validation = FormValidation.formValidation(
+			form,
+			{
+				fields: {
+					name: {
+						validators: {
+							notEmpty: {
+								message: 'product name is required'
+							}
+						}
+					},
+					description: {
+						validators: {
+							notEmpty: {
+								message: 'product description is required'
+							}
+						}
+					},
+                    category: {
+						validators: {
+							notEmpty: {
+								message: 'product category is required'
+							}
+						}
+					},
+                    subcategory: {
+						validators: {
+							notEmpty: {
+								message: 'product subcategory is required'
+							}
+						}
+					},
+                    quantity: {
+						validators: {
+							notEmpty: {
+								message: 'product quantity is required'
+							}
+						}
+					},
+					price: {
+						validators: {
+							notEmpty: {
+								message: 'product price is required'
+							}
+						}
+					},
+					variant: {
+						validators: {
+							notEmpty: {
+								message: 'product variant is required'
+							}
+						}
+					},
+				},
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					bootstrap: new FormValidation.plugins.Bootstrap()
+				}
+			}
+		);
+
+        $('#add_product_btn').on('click', function (e) {
+            e.preventDefault();
+
+            validation.validate().then(function(status) {
+		        if (status == 'Valid') {
+                   var name = $("input[name='name']").val();
+					var description = $("input[name='description']").val();
+					var category = $("input[name='category']").val();
+					var subcategory = $("input[name='subcategory']").val();
+					var quantity = $("input[name='quantity']").val();
+					var price = $("input[name='price']").val();
+					var variant = $("input[name='variant']").val();
+					var url = "http://localhost:8081/admin/providers";
+					console.log(`${name} ${description}`)
+					fetch(url,{
+						method:'post',
+						headers: {
+							'Content-Type': 'application/json'
+						  },
+						body: JSON.stringify({
+							name: name, description: description, category: category, subcategory: subcategory,
+							quantity: quantity, price: price, variant: variant
+						})
+					})
+					.then(res=>{
+						if(res.ok){
+							window.location.href="index.html"
+						}else{
+							throw new Error('Login error');
+						}
+					})
+					
+					.catch((error) => {
+						window.sessionStorage.clear();
+							swal.fire({
+								text:'Invalid Login credentials',
+								icon: "error",
+								buttonsStyling: false,
+								confirmButtonText: "Retry",
+								customClass: {
+								confirmButton: "btn font-weight-bold btn-light-primary"
+								}
+							})
+					  });
+				} else {
+					swal.fire({
+		                text: "Sorry, looks like there are some errors detected, please try again.",
+		                icon: "error",
+		                buttonsStyling: false,
+		                confirmButtonText: "Ok, got it!",
+                        customClass: {
+    						confirmButton: "btn font-weight-bold btn-light-primary"
+    					}
+		            }).then(function() {
+						KTUtil.scrollTop();
+					});
+				}
+		    });
+        });
+
+        // Handle cancel button
+        $('#kt_login_signup_cancel').on('click', function (e) {
+            e.preventDefault();
+
+            _showForm('signin');
+        });
+    }
         // Handle cancel button
         $('#kt_login_signup_cancel').on('click', function (e) {
             e.preventDefault();
@@ -260,7 +464,8 @@ var KTLogin = function() {
             _login = $('#kt_login');
 
             _handleSignInForm();
-            _handleSignUpForm();
+			_handleSignUpForm();
+			_handleProductForm();
             _handleForgotForm();
         }
     };

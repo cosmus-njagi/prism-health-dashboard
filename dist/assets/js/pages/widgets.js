@@ -7,63 +7,7 @@ var KTWidgets = function() {
     // Private functions
 
     // handle form request
-    $('#add_provider').on('click', function (e) {
-			e.preventDefault();
-			console.log("your button has been clicked");
-
-            validation.validate().then(function(status) {
-				if (status == 'Valid') {
-					var provider = $("input[name='provider']").val();
-                    var phone = $("input[name='phone']").val();
-                    var email = $("input[name='email']").val();
-                    var location = $("input[name='location']").val();
-                    var location = $("input[name='location']").val();
-					var url = "http://172.105.167.182:8081/swagger-ui.html#/AdminProvider_Apis";
-					console.log(`${phone} ${password}`)
-					fetch(url,{
-						method:'post',
-						headers: {
-							'Content-Type': 'application/json'
-						  },
-						body:JSON.stringify({provider:provider,phone:phone,email:email,location:location})
-					})
-					.then(res=>{
-						if(res.ok){
-							window.location.href="index.html"
-						}else{
-							throw new Error('Login error');
-						}
-					})
-					
-					.catch((error) => {
-						window.sessionStorage.clear();
-							swal.fire({
-								text:'Invalid Login credentials',
-								icon: "error",
-								buttonsStyling: false,
-								confirmButtonText: "Retry",
-								customClass: {
-								confirmButton: "btn font-weight-bold btn-light-primary"
-								}
-							})
-					  });
-				} else {
-					swal.fire({
-		                text: "Sorry, looks like there are some errors detected, Check if fields are empty.",
-		                icon: "error",
-		                buttonsStyling: false,
-		                confirmButtonText: "Ok",
-                        customClass: {
-    						confirmButton: "btn font-weight-bold btn-light-primary"
-    					}
-		            }).then(function() {
-						KTUtil.scrollTop();
-					});
-				}
-		    });
-				
-		    });
-        
+   
 //general controls
 
     var _initDaterangepicker = function() {
@@ -4430,9 +4374,9 @@ var KTWidgets = function() {
             _initAdvancedTableGroupSelection('kt_advance_table_widget_4');
         }
     }
-}();
+}());
 
-// Webpack support
+ Webpack support
 if (typeof module !== 'undefined') {
     module.exports = KTWidgets;
 }
